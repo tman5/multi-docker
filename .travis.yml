@@ -1,0 +1,22 @@
+sudo: required
+services:
+        - docker
+
+before_install:
+        - docker build -t tman5/react-test -f ./client/Dockerfile.dev ./client
+
+scripts:
+        - docker run tman5/react-test npm test -- --coverage
+
+after_success:
+        - docker build -t tman5/multi-client ./client
+        - docker build -t tman5/multi-nginx ./nginx
+        - docker build -t tman5/multi-server ./server
+        - docker build -t tman5/multi-worker ./worker
+        # Log in to the docker CLI
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+        # Take those images and push them docker hub
+        - docker push tman5/multi-client
+        - docker push tman5/multi-nginx
+        - docker push tman5/multi-server
+        - docker push tman5/multi-worker
