@@ -21,3 +21,15 @@ after_success:
         - docker push tscotto5/multi-nginx
         - docker push tscotto5/multi-server
         - docker push tscotto5/multi-worker
+deploy:
+        provider: elasticbeanstalk
+        region: us-east-1
+        app: multi-docker
+        env: MultiDocker-env
+        bucket_name: elasticbeanstalk-us-east-1-350670948127
+        bucket_path: docker-multi
+        on:
+                branch: master
+        access_key_id: $AWS_ACCESS_KEY
+        secret_access_key:
+                secure: $AWS_SECREY_KEY
